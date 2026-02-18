@@ -118,7 +118,7 @@ with tab1:
     )
 
     fig1 = px.bar(zone_counts, x="trips", y="Zone", orientation="h")
-    st.plotly_chart(fig1, use_container_width=True)
+    st.plotly_chart(fig1,  width="stretch")
 
     st.markdown("""
 The majority of trips originate from high activity and urban areas such as Midtown, Upper East Side, and Financial District.
@@ -140,7 +140,7 @@ These demands are predictable based on the economic activity of these zones.
         color_continuous_scale="blues"
     )
 
-    st.plotly_chart(fig5, use_container_width=True)
+    st.plotly_chart(fig5,  width="stretch")
 
     st.markdown("""
 Taxi demand peaks during evenings or on weekdays, reflecting typical commuting patterns and nightlife activity.
@@ -160,7 +160,7 @@ This pattern is consistent with taxis being used primarily for work commutes and
     nbins=60,
     title="Distribution of Trip Distances (0.1–30 miles)")
 
-    st.plotly_chart(fig3, use_container_width=True)
+    st.plotly_chart(fig3,  width="stretch")
 
     st.markdown("""
 Most taxi rides are short distance trips, showing taxis are primarily used for local
@@ -177,7 +177,7 @@ with tab2:
     fare_hour = filtered_df.groupby("pickup_hour")["fare_amount"].mean().reset_index()
 
     fig2 = px.line(fare_hour, x="pickup_hour", y="fare_amount", markers=True)
-    st.plotly_chart(fig2, use_container_width=True)
+    st.plotly_chart(fig2,  width="stretch")
 
     st.markdown("""
 Higher fares appear during peak traffic periods when trips take longer due to congestion.
@@ -198,9 +198,10 @@ with tab3:
     payment_counts = payment_counts.sort_values(by="count", ascending=False)
 
     fig4 = px.bar(payment_counts, x="payment_type", y="count")
-    st.plotly_chart(fig4, use_container_width=True)
+    st.plotly_chart(fig4,  width="stretch")
 
     st.markdown("""
 Electronic payments dominate taxi usage, indicating riders prefer speed and convenience
 over handling cash. This trend also reflects broader societal shifts towards digital payments or how wide acceptance of credit cards to accomodate the large number of tourists and business travelers in NYC.
 """)
+
