@@ -7,21 +7,32 @@ st.set_page_config(layout="wide")
 @st.cache_data
 def load_data():
 
-    # January 2024 yellow taxi data (official NYC TLC public dataset)
     taxi_url = "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2024-01.parquet"
-
-    # official zone lookup table
     zone_url = "https://d37ci6vzurychx.cloudfront.net/misc/taxi_zone_lookup.csv"
 
-    df = pd.read_parquet(taxi_url)
+    df = pd.read_parquet(
+        taxi_url,
+        engine="pyarrow",
+        columns=[
+            "tpep_pickup_datetime",
+            "tpep_dropoff_datetime",
+            "trip_distance",
+            "fare_amount",
+            "total_amount",
+            "payment_type",
+            "PULocationID"
+        ]
+    )
+
+
+    df = df.sample(150000, random_state=42)
+
     zones = pd.read_csv(zone_url)
 
-    
-# Data cleaning
+    # Data cleaning
     df = df[df["trip_distance"] > 0]
     df = df[df["fare_amount"] > 0]
 
-    # convert datetime
     df["tpep_pickup_datetime"] = pd.to_datetime(df["tpep_pickup_datetime"])
     df["tpep_dropoff_datetime"] = pd.to_datetime(df["tpep_dropoff_datetime"])
 
@@ -31,9 +42,9 @@ def load_data():
     df["trip_duration_minutes"] = (
         df["tpep_dropoff_datetime"] - df["tpep_pickup_datetime"]
     ).dt.total_seconds() / 60
+
     df = df.merge(zones, left_on="PULocationID", right_on="LocationID", how="left")
 
-    # payment mapping
     payment_map = {
         1: "Credit Card",
         2: "Cash",
@@ -43,6 +54,7 @@ def load_data():
     df["payment_type"] = df["payment_type"].map(payment_map)
 
     return df
+
 
 df = load_data()
 
@@ -204,4 +216,5 @@ with tab3:
 Electronic payments dominate taxi usage, indicating riders prefer speed and convenience
 over handling cash. This trend also reflects broader societal shifts towards digital payments or how wide acceptance of credit cards to accomodate the large number of tourists and business travelers in NYC.
 """)
+
 
